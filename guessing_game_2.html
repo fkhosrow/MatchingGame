@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <title>JavaScript Color Guessing Game</title>
+</head>
+<body onload="play_game()">
+<script>
+function play_game() {
+    document.body.style.backgroundColor = "white";
+    // Pick a color from the color array as target
+    var colors = ["blue", "cyan", "green", "orange", "pink", "red", "yellow"];
+    var target_index = Math.random() * colors.length;
+    var target_index_integer = Math.floor(target_index);
+    target = colors[target_index_integer];  
+    // Keep guessing until the guess is correct.
+    var guesses = 0;
+    var finished = false;
+    while (!finished) {
+        var guess_input_text = prompt("I am thinking of one of these colors:\n\n"+
+                                  colors.toString() + "\n\n" + 
+                                  "What color am I thinking of?");
+        // User  cancelled.
+        if (null == guess_input_text) {
+            alert("Sorry to see you go.\n\n" +
+            "See you next time!");
+            break;
+        }
+
+        guesses++;
+        finished = check_guess(guesses, guess_input_text, colors);
+    }
+}
+
+function check_guess(guesses, guess_input, colors) {
+    if (guess_input == target) {        
+        // Change the background color.
+        // var body = document.getElementsByTagName("body")[0];
+        // body.style.background = target;
+        document.body.style.backgroundColor = target;
+
+// Change the background color right away.
+setTimeout(function() {
+         alert("Congradulations!\n\n" + 
+        "It took you " + guesses + " guesses to finish the game!\n\n" + 
+        "You can see the color in the background."
+        );   
+}, 500);
+
+        return true;
+    }
+    else {
+        var msg1 = "Sorry, your guess is not correct!\n\n";
+        var msg2 = "Please try again.";
+      
+        var found = false;
+        for (var i = 0; i < colors.length; i++) {
+            if (colors[i] == guess_input) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            alert("I don't recognize your color.\n\n" + 
+            msg2);
+        }
+        else if (guess_input < target) {
+            alert(msg1 +
+                "Hint: your color is alphabetically lower than mine.\n\n" +
+                msg2);
+        }
+        else /*if (guess_input > target)*/ {
+            alert(msg1 +
+                "Hint: your color is alphabetically higher than mine.\n\n" +
+                msg2);
+        }
+
+        return false;
+    }
+}
+</script>
+</body>
+</html>
