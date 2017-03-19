@@ -1,0 +1,95 @@
+<!docType html>
+<html>
+<head>   
+    <title>Matching Game</title>
+    <style>
+       img { position:absolute }
+       div { position:absolute; height:500px; width:500px; background-color: black}
+       #rightSide { left: 500px; border-left: 1px solid white }
+    </style>
+</head>
+<body onload="startGame(5)">
+    <h1 style="color:yellow">Matching Game</h1>
+    <h2 style="color: green" id="nextLevel">Level 1</h2>
+    <h3 style="color: red" id="timer">Time: </h3>
+    <div id="leftSide"></div>
+    <div id="rightSide"></div>
+    <script type="text/javascript">
+   // Globals
+   var leftSide = document.getElementById("leftSide");
+   var rightSide = document.getElementById("rightSide");
+   var body = document.getElementsByTagName("body")[0];
+   var levelCount = 1;
+   var timerCount = 1;
+   // Show the amount of time (in seconds) it's taking to play this level.
+   var timer = setInterval(showTime, 1000);    
+   function startGame(numberOfImages) 
+   {
+       createImages(numberOfImages);
+    
+       // If user clicks on the missing image, go to the next level
+       leftSide.lastChild.onclick = function nextLevel(event) {
+           // Ensures the event does not also get applied to other elements in 
+           // the web page such as other faces. 
+           // That would trigger the function multiple times!
+           event.stopPropagation();
+           // Clean up existing children.
+           removeImages();
+           // Regenerate more faces for the next level.
+           levelCount++;
+           startGame(numberOfImages + 5);
+           // Update level element
+           document.getElementById("nextLevel").innerHTML = "Level " + levelCount;
+           // Reset timer
+           timerCount = 1; 
+       }
+
+       // If user clicks anywhere else, abort.
+       body.onclick = function gameOver() {
+           alert("Game Over! Better luck next time");
+           // Unsubscribes from all the events.
+           body.onclick = null;
+           leftSide.lastChild.onclick = null;
+           // Stop the timer.
+           clearInterval(timer);
+        }; 
+   }
+
+   function removeImages() {
+       while (leftSide.firstChild) { leftSide.removeChild(leftSide.firstChild); }
+       while (rightSide.firstChild) { rightSide.removeChild(rightSide.firstChild); }
+   }
+
+   function createImages(nImages) {
+       var divHeight = 500;
+       var divWidth = 500;
+       var imgHeight = 100;
+       var imgWidth = 100; 
+       var count = 0;
+       while (count < nImages)
+       {
+           // Create an img element
+           var img = document.createElement("img");
+           img.src = "https://home.cse.ust.hk/~rossiter/mooc/matching_game/smile.png";
+           var top  = Math.floor(Math.random() * (divHeight - imgHeight));
+           var left = Math.floor(Math.random() * (divWidth - imgWidth));
+           img.style.top = top + "px";
+           img.style.left = left + "px"; 
+           // Add the image to the left side of the page
+           leftSide.appendChild(img); 
+           count++;
+       }
+
+       // Clone the images for the right side.
+       var leftSideImages = leftSide.cloneNode(true);
+       leftSideImages.removeChild(leftSideImages.lastChild);
+       rightSide.appendChild(leftSideImages);
+   }
+
+   function showTime() {   
+       document.getElementById("timer").innerHTML = "Time: " + timerCount;
+       timerCount++;       
+   }
+</script>
+</body> 
+</html>
